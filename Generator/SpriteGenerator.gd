@@ -21,7 +21,7 @@ func get_sprite(sd, size, n_colors, outline = true):
 	var scheme = colorscheme_generator.generate_new_colorscheme(n_colors)
 	var eye_scheme = colorscheme_generator.generate_new_colorscheme(n_colors)
 	var all_groups = color_filler.fill_colors(map, scheme, eye_scheme, n_colors, outline)
-	var g_draw = group_drawer.instance()
+	var g_draw = group_drawer.instantiate()
 	g_draw.groups = all_groups.groups
 	g_draw.negative_groups = all_groups.negative_groups
 	return g_draw

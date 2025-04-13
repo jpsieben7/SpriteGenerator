@@ -2,12 +2,12 @@ extends Node
 
 # Using ideas from https://www.iquilezles.org/www/articles/palettes/palettes.htm
 func generate_new_colorscheme(n_colors):
-	var a = Vector3(rand_range(0.0, 0.5), rand_range(0.0, 0.5), rand_range(0.0, 0.5))
-	var b = Vector3(rand_range(0.1, 0.6), rand_range(0.1, 0.6), rand_range(0.1, 0.6))
-	var c = Vector3(rand_range(0.15, 0.8), rand_range(0.15, 0.8), rand_range(0.15, 0.8))
-	var d = Vector3(rand_range(0.0, 1.0), rand_range(0.0, 1.0), rand_range(0.0, 1.0))
+	var a = Vector3(randf_range(0.0, 0.5), randf_range(0.0, 0.5), randf_range(0.0, 0.5))
+	var b = Vector3(randf_range(0.1, 0.6), randf_range(0.1, 0.6), randf_range(0.1, 0.6))
+	var c = Vector3(randf_range(0.15, 0.8), randf_range(0.15, 0.8), randf_range(0.15, 0.8))
+	var d = Vector3(randf_range(0.0, 1.0), randf_range(0.0, 1.0), randf_range(0.0, 1.0))
 
-	var cols = PoolColorArray()
+	var cols = PackedColorArray()
 	var n = float(n_colors - 1.0)
 	for i in range(0, n_colors, 1):
 		var vec3 = Vector3()

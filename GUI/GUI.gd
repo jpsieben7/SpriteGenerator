@@ -1,15 +1,15 @@
 extends Control
 
-onready var sprite_generator = preload("res://Generator/SpriteGenerator.gd").new()
-onready var name_generator = preload("res://Generator/NameGenerator.gd").new()
-onready var group_drawer = preload("res://Generator/GroupDrawer.tscn")
+@onready var sprite_generator = preload("res://Generator/SpriteGenerator.gd").new()
+@onready var name_generator = preload("res://Generator/NameGenerator.gd").new()
+@onready var group_drawer = preload("res://Generator/GroupDrawer.tscn")
 
 
 var seed_list = []
 var seed_index = 0
 var outline = true
 var lifetime = 0
-var size = Vector2(45,45)
+var sz = Vector2(45,45)
 
 func _process(delta):
 	lifetime += delta * 0.025
@@ -47,23 +47,24 @@ func _redraw():
 	var gd = _get_group_drawer(false)
 	
 	$CenterContainer/Control.add_child(gd)
-	$Label.text = name_generator.get_name()
+	$Label.text = name_generator.generate_name()
 	
 
-func _get_group_drawer(var pixel_perfect = false):
-	var sprite_groups = sprite_generator.get_sprite(seed_list[seed_index], size, 12,  outline)
-	var gd = group_drawer.instance()
+func _get_group_drawer(pixel_perfect := false):
+	var sprite_groups = sprite_generator.get_sprite(seed_list[seed_index], sz, 12, outline)
+	var gd = group_drawer.instantiate()
 	gd.groups = sprite_groups.groups
 	gd.negative_groups = sprite_groups.negative_groups
 	
-	var draw_size = min((draw_rect.x / size.x), (draw_rect.y / size.y))
+	var draw_sz = min(draw_rect.x / sz.x, draw_rect.y / sz.y)
 	if pixel_perfect:
-		gd.draw_size = 1
+		gd.draw_sz = 1
 	else:
-		gd.draw_size = draw_size
-		gd.position = Vector2(-draw_size *size.x*0.5, -draw_size *size.y*0.5)
+		gd.draw_sz = draw_sz
+		gd.position = Vector2(-draw_sz * sz.x * 0.5, -draw_sz * sz.y * 0.5)
 	
 	return gd
+
 
 func _get_next_seed():
 	randomize()
@@ -107,17 +108,19 @@ func _on_ExportButton_pressed():
 	gd.position = Vector2(1,1)
 	$Viewport.add_child(gd)
 	
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
+	#yield(get_tree(), "idle_frame")
+	#yield(get_tree(), "idle_frame")
+	await get_tree()
+	await get_tree()
 	export_image()
 	
 
 func export_image():
 	var img = Image.new()
-	img.create(size.x + 2, size.y + 2, false, Image.FORMAT_RGBA8)
+	img.create(sz.x + 2, sz.y + 2, false, Image.FORMAT_RGBA8)
 	var viewport_img = $Viewport.get_texture().get_data()
 
-	img.blit_rect(viewport_img, Rect2(0,0,size.x+2,size.y+2), Vector2(0,0))
+	img.blit_rect(viewport_img, Rect2(0,0,sz.x+2,sz.y+2), Vector2(0,0))
 
 	save_image(img)
 
@@ -133,8 +136,8 @@ func save_image(img):
 		
 
 func _on_Height_value_changed(value):
-	size.y = clamp(round(value), 10, 128)
+	sz.y = clamp(round(value), 10, 128)
 
 
 func _on_Width_value_changed(value):
-	size.x = clamp(round(value), 10, 128)
+	sz.x = clamp(round(value), 10, 128)

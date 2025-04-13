@@ -13,7 +13,7 @@ var other = ["Destruction", "Chaos", "Equality", "Electricity", "Speed", "Mutati
 enum text_add {materials, foods, flavors, sizes, properties, colors, ages}
 var can_add = [text_add.materials,text_add.foods,text_add.flavors,text_add.sizes,text_add.properties,text_add.ages]
 
-func get_name():
+func generate_name():
 	var name_string = ""
 
 	var has_added = []
@@ -65,7 +65,7 @@ func get_name():
 	return name_string
 	
 func _rand_chance(chance):
-	return rand_range(0.0, 1.0) < chance
+	return randf_range(0.0, 1.0) < chance
 
 func _rand_from_array(arr):
 	return arr[randi() % arr.size()]

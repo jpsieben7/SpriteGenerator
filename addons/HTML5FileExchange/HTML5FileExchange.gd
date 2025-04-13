@@ -8,12 +8,13 @@ func _ready():
 
 
 func _notification(notification:int) -> void:
-	if notification == MainLoop.NOTIFICATION_WM_FOCUS_IN:
+	#if notification == MainLoop.NOTIFICATION_WM_FOCUS_IN:
+	if notification == MainLoop.NOTIFICATION_APPLICATION_FOCUS_IN:
 		emit_signal("InFocus")
 
 func _define_js()->void:
 	#Define JS script
-	JavaScript.eval("""
+	JavaScriptBridge.eval("""
 	var fileData;
 	var fileType;
 	var fileName;
@@ -55,15 +56,17 @@ func load_image()->Image:
 		return
 		
 	#Execute js function
-	JavaScript.eval("upload();", true)	#opens promt for choosing file
+	JavaScriptBridge.eval("upload();", true)	#opens promt for choosing file
 	
 	#label.text = "Wait for focus"
-	await(self, "InFocus")	#wait until js promt is closed
+	#yield(self, "InFocus")	#wait until js promt is closed
+	await self
 	
 	#label.text = "Timer on for loading"
-	yield(get_tree().create_timer(0.1), "timeout")	#give some time for async js data load
+	#yield(get_tree().create_timer(0.1), "timeout")	#give some time for async js data load
+	await get_tree().create_timer(0.1)
 	
-	if JavaScript.eval("canceled;", true):	# if File Dialog closed w/o file
+	if JavaScriptBridge.eval("canceled;", true):	# if File Dialog closed w/o file
 		#label.text = "Canceled prompt"
 		return
 	
@@ -71,14 +74,15 @@ func load_image()->Image:
 	#label.text = "Load image"
 	var imageData
 	while true:
-		imageData = JavaScript.eval("fileData;", true)
+		imageData = JavaScriptBridge.eval("fileData;", true)
 		if imageData != null:
 			break
 		#label.text = "No image yet"
-		yield(get_tree().create_timer(1.0), "timeout")	#need more time to load data
+		#yield(get_tree().create_timer(1.0), "timeout")	#need more time to load data
+		await get_tree().create_timer(1.0)
 	
-	var imageType = JavaScript.eval("fileType;", true)
-	var imageName = JavaScript.eval("fileName;", true)
+	var imageType = JavaScriptBridge.eval("fileType;", true)
+	var imageName = JavaScriptBridge.eval("fileName;", true)
 	
 	var image = Image.new()
 	var image_error
@@ -99,8 +103,8 @@ func load_image()->Image:
 		return image
 		# Display texture
 		var tex = ImageTexture.new()
-		tex.create_from_image(image, 0) # Flag = 0 or else export is fucked!
-		Sprite.texture = tex
+		tex.create_from_image(image) # Flag = 0 or else export is fucked!
+		Sprite2D.texture = tex
 		#loadedImage = image # Keep Image for later, just in case...
 		#loadedImageName = imageName
 		#label.text = "Image %s loaded as %s." % [imageName, imageType]
@@ -116,13 +120,14 @@ func save_image(image:Image, fileName:String = "export")->void:
 	if image.save_png("user://export_temp.png"):
 		#label.text = "Error saving temp file"
 		return
-	var file:File = File.new()
-	if file.open("user://export_temp.png", File.READ):
+	var file:FileAccess = FileAccess.open("user://export_temp.png", FileAccess.READ)
+	if file:
 		#label.text = "Error opening file"
 		return
 	var pngData = Array(file.get_buffer(file.get_len()))	#read data as PoolByteArray and convert it to Array for JS
 	file.close()
-	var dir = Directory.new()
-	dir.remove("user://export_temp.png")
-	JavaScript.eval("download('%s', %s);" % [fileName, str(pngData)], true)
+	var dir = DirAccess.open("user://")
+	if dir != null and dir.file_exists("export_temp.png"):
+		dir.remove("export_temp.png")
+	JavaScriptBridge.eval("download('%s', %s);" % [fileName, str(pngData)], true)
 	#label.text = "Saving DONE"

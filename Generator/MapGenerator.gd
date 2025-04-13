@@ -27,7 +27,7 @@ func _get_random_map(size):
 			# When close to center increase the cances to fill the map, so it's more likely to end up with a sprite that's connected in the middle
 			var to_center = (abs(y - size.y * 0.5) * 2.0) / size.y
 			if x == floor(size.x*0.5) - 1 || x == floor(size.x*0.5) - 2:
-				if rand_range(0.0, 0.4) > to_center:
+				if randf_range(0.0, 0.4) > to_center:
 					arr[y] = true
 
 		map[x] = (arr.duplicate(true))
@@ -36,7 +36,7 @@ func _get_random_map(size):
 	
 #	for x in range(0, map.size()):
 #		for y in range(0, map[x].size()):
-#			if rand_range(0.0, 1.0) > 0.99:
+#			if randf_range(0.0, 1.0) > 0.99:
 #				map[x][y] = true
 			
 	return map
@@ -50,4 +50,4 @@ func _set_at_pos(map, pos, val):
 	return true
 
 func rand_bool(chance):
-	return rand_range(0.0, 1.0) > chance
+	return randf_range(0.0, 1.0) > chance

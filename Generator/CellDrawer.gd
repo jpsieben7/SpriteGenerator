@@ -14,7 +14,7 @@ func _ready():
 func set_cells(c):
 	cells = c
 
-	update()
+	queue_redraw()
 
 func _draw():
 	var average = Vector2()
@@ -44,4 +44,4 @@ func _process(delta):
 
 func set_eye():
 	is_eye = true
-	update()
+	queue_redraw()

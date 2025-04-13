@@ -2,9 +2,9 @@ extends Node2D
 
 var groups = []
 var negative_groups = []
-var draw_size = 10
+var draw_sz = 10
 var movement = true
-onready var cell_drawer = preload("res://Generator/CellDrawer.tscn")
+@onready var cell_drawer = preload("res://Generator/CellDrawer.tscn")
 
 func _ready():
 	var largest = 0
@@ -15,7 +15,7 @@ func _ready():
 		var g = groups[i].arr
 		groups[i]["start_time"] = g.size() + groups.size()
 		if g.size() >= largest * 0.25:
-			var cell = cell_drawer.instance()
+			var cell = cell_drawer.instantiate()
 			cell.set_cells(g)
 			cell.lifetime = groups[i].start_time
 			cell.movement = movement
@@ -36,7 +36,7 @@ func _ready():
 						g["start_time"] = g2["start_time"]
 						
 			if touching:
-				var cell = cell_drawer.instance()
+				var cell = cell_drawer.instantiate()
 				cell.set_cells(g.arr)
 
 				cell.lifetime = g.start_time
@@ -47,7 +47,7 @@ func _ready():
 					cell.set_eye()
 	
 	for c in get_children():
-		c.draw_size = draw_size
+		c.draw_size = draw_sz
 
 func disable_movement():
 	movement = false
