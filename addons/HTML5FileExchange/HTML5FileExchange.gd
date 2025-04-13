@@ -58,7 +58,7 @@ func load_image()->Image:
 	JavaScript.eval("upload();", true)	#opens promt for choosing file
 	
 	#label.text = "Wait for focus"
-	yield(self, "InFocus")	#wait until js promt is closed
+	await(self, "InFocus")	#wait until js promt is closed
 	
 	#label.text = "Timer on for loading"
 	yield(get_tree().create_timer(0.1), "timeout")	#give some time for async js data load
