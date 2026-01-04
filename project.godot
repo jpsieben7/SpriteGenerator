@@ -12,7 +12,7 @@ config_version=5
 
 config/name="SpriteGenerator"
 run/main_scene="res://GUI/GUI.tscn"
-config/features=PackedStringArray("4.4")
+config/features=PackedStringArray("4.5")
 config/icon="res://icon.png"
 
 [autoload]
@@ -22,6 +22,10 @@ HTML5File="*res://addons/HTML5FileExchange/HTML5FileExchange.gd"
 [display]
 
 window/stretch/mode="2d"
+
+[dotnet]
+
+project/assembly_name="SpriteGenerator"
 
 [editor_plugins]
 
